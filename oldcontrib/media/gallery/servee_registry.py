@@ -103,10 +103,10 @@ class GalleryInsert(ModelInsert):
         return patterns("",
             url(r"^add_minimal_image/$",
                 self.add_image_view,
-                name="insert_servee_gallery_gallery_image_add"),
+                name="insert_gallery_gallery_image_add"),
             url(r"^reorder/$",
                 self.reorder,
-                name="insert_servee_gallery_gallery_reorder"),
+                name="insert_gallery_gallery_reorder"),
         ) + super(GalleryInsert, self).get_urls()
     
     
