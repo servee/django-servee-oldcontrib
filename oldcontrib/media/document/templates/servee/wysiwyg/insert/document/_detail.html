@@ -2,7 +2,7 @@
 {% load thumbnail %}
 	<div id="srv_insert_document_display">
 	   {% thumbnail object.document 175x225 as thumb %}
-	   <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
+	   <img src="{{ thumb }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
 	</div>
 	<h5 id="srv_insert_document_title">{{ object.title }}</h5>
 	<p id="srv_insert_document_description"></p>
