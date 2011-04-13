@@ -1,6 +1,6 @@
 {% load insert_tags %}
 {% load uni_form_tags %}
-<form id="srv_upload_document" method="POST" enctype="multipart/form-data" class="servee uniform" action="{% url servee:insert_servee_document_document_add %}">
+<form id="srv_upload_document" method="POST" enctype="multipart/form-data" class="servee uniform" action="{% url servee:insert_document_add %}">
     {% csrf_token %}
     {{ form|as_uni_form }}
     <div class="buttonHolder">
@@ -36,6 +36,6 @@ $(document).ready(function(){
 </script>
 <ul>
 {% for object in insert.items %}
-    {% include "servee/wysiwyg/insert/servee_document/_add.html" %}
+    {% include "servee/wysiwyg/insert/document/_add.html" %}
 {% endfor %}
 </ul>
