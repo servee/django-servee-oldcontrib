@@ -54,6 +54,11 @@ oldcontrib/media/gallery/migrations/0002_auto__add_gallerymodel.py
 oldcontrib/media/gallery/migrations/__init__.py
 oldcontrib/media/gallery/static/jquery-ui/js/jquery-ui-1.8.11.custom.min.js
 oldcontrib/media/gallery/templates/inlines/gallery_gallery.html
+oldcontrib/media/gallery/templates/servee/wysiwyg/insert/gallery/_add.html
+oldcontrib/media/gallery/templates/servee/wysiwyg/insert/gallery/_add_image.html
+oldcontrib/media/gallery/templates/servee/wysiwyg/insert/gallery/_detail.html
+oldcontrib/media/gallery/templates/servee/wysiwyg/insert/gallery/_list.html
+oldcontrib/media/gallery/templates/servee/wysiwyg/insert/gallery/_render.html
 oldcontrib/media/image/.DS_Store
 oldcontrib/media/image/__init__.py
 oldcontrib/media/image/__init__.pyc
