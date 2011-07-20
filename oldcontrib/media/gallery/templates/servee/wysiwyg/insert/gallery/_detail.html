@@ -2,12 +2,12 @@
 {% load uni_form_tags %}
 {% load thumbnail %}
 	<h5 id="srv_insert_gallery_title">{{ object.title }}</h5>
-	<form id="srv_upload_image" method="POST" enctype="multipart/form-data" class="servee uniform" action="{% url servee:insert_gallery_gallery_image_add %}">
+	<form id="srv_upload_gallery_image" method="POST" enctype="multipart/form-data" class="servee uniform" action="{% url servee:insert_gallery_gallery_image_add %}">
         {% csrf_token %}
         {{ image_form|as_uni_form }}
         <input type="hidden" value="{{ object.pk }}" name="gallery_id" id="id_gallery_id" />
         <div class="buttonHolder">
-            <input type="submit" class="srv_button insert button" id="srv_upload_image_action" value="Upload">
+            <input type="submit" class="srv_button insert button" id="srv_upload_gallery_image_action" value="Upload">
         </div>
     </form>
     <script type="text/javascript" src="{{ STATIC_URL }}uploadify/swfobject.js"></script>
@@ -21,19 +21,19 @@
         
         // uploadify
         
-    	$("form#srv_upload_image input[type=file]").uploadify({
+    	$("#id_gallery_image-image").uploadify({
     		swf: "{{ STATIC_URL }}uploadify/uploadify.swf",
-            uploader: $("form#srv_upload_image").attr("action"),
+            uploader: $("form#srv_upload_gallery_image").attr("action"),
             cancelImage: "{{ STATIC_URL }}uploadify/uploadify-cancel.png",
             auto: true,
             buttonImage: "{{ STATIC_URL }}servee/images/buttonBG.png",
             width: 90,
             height: 24,
-            fileObjName: "image",
+            fileObjName: "gallery_image-image",
             checkExisting: false,
             multi: true,
             postData: {
-                "csrfmiddlewaretoken": $("form#srv_upload_image [name=csrfmiddlewaretoken]").val(),
+                "csrfmiddlewaretoken": $("form#srv_upload_gallery_image [name=csrfmiddlewaretoken]").val(),
                 "gallery_id": "{{ object.pk }}"
             },
     		onUploadSuccess: function(file, response){
@@ -41,9 +41,14 @@
             	
             	$("#id_galleryThumbs").sortable("destroy");
             	$("#id_galleryThumbs").sortable();
+    		},
+    		onUploadError: function(file,errorCode,errorMsg){
+    		    console.log(file);
+    		    console.log(errorCode);
+    		    console.log(errorMsg);
     		}
     	});
-    	$("input#srv_upload_image_action").hide();
+    	$("input#srv_upload_gallery_image_action").hide();
     	
     	$("#id_galleryThumbs").sortable();
         $("#id_galleryThumbs").disableSelection();

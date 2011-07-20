@@ -24,7 +24,7 @@ class GalleryInsert(ModelInsert):
     def __init__(self, *args, **kwargs):
         self.item_add_image_template = [
             "servee/wysiwyg/insert/%s/%s/_add_image.html" % (self.model._meta.app_label, self.model._meta.module_name),
-            "servee/wysiwyg/insert/%s/_add_image.html" % (self.model._meta.app_label),            
+            "servee/wysiwyg/insert/%s/_add_image.html" % (self.model._meta.app_label),
         ]
         
         if kwargs.get("add_image_form", None):
@@ -51,7 +51,7 @@ class GalleryInsert(ModelInsert):
         Uploadify doesn't properly pass the csrf_token.
         """
         instance_form = self.get_add_image_form()
-        form = instance_form(request.POST, request.FILES)
+        form = instance_form(request.POST, request.FILES, prefix="gallery_image")
 
         new_instance = None
         if form.is_valid():
@@ -63,9 +63,12 @@ class GalleryInsert(ModelInsert):
             gallery = Gallery.objects.get(pk=request.POST["gallery_id"])
             gi.gallery = gallery
             
-            gallery_items = GalleryItem.objects.filter(gallery=gallery).order_by("-order").values_list("order", flat=True)
+            gallery_items = gallery.items.order_by("-order").values_list("order", flat=True)
             if gallery_items:
-                gi.order = gallery_items[0] + 1
+                if gallery_items[0]:
+                    gi.order = gallery_items[0] + 1
+                else: #odd edge case with no order
+                    gi.order = 1
             else:
                 gi.order = 1
 
@@ -79,7 +82,7 @@ class GalleryInsert(ModelInsert):
             context.update({
                     "insert": self,
                     "form": form,
-                    "object": new_instance
+                    "item": gi
                 })
             response = HttpResponse(template.render(context))
             response.status_code = 201
@@ -131,7 +134,7 @@ class GalleryInsert(ModelInsert):
                 "insert": self,
                 "object": obj,
                 "form": form(),
-                "image_form": image_form()
+                "image_form": image_form(prefix="gallery_image")
             }, context_instance=RequestContext(request))
 
 frontendadmin.site.register_insert(GalleryInsert)
