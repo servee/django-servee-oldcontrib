@@ -113,10 +113,10 @@ setup(
     package_data = find_package_data('oldcontrib',only_in_packages=False),
     include_package_data = True,
     install_requires = [
-        'django-servee>0.5.5',
-        'PIL',
-        'easy-thumbnails',
-        'django-treebeard==1.61'
+        #'django-servee>0.5.5',
+        #'PIL',
+        #'easy-thumbnails',
+        #'django-treebeard==1.61'
     ],
     classifiers = [
         'Development Status :: 3 - Alpha',
