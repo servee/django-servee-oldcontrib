@@ -21,7 +21,7 @@ $(document).ready(function(){
         buttonImage: "{{ STATIC_URL }}servee/images/buttonBG.png",
         width: 90,
         height: 24,
-        fileObjName: "imageinsert-image",
+        fileObjName: $("form#srv_upload_image [type=file]").attr('name'),
         checkExisting: false,
         multi: true,
         postData: {
