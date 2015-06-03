@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from oldcontrib.media.image.forms import ImageUpload
 
-from .models import Image
+from oldcontrib.media.image.models import Image
 
 @csrf_exempt
 @require_POST
