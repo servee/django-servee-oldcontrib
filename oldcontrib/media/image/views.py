@@ -13,7 +13,7 @@ def upload_image(request):
     """
     ret = {}
     ret['error'] = []
-    
+
     img = ImageUpload(request.POST, request.FILES)
     if img.is_valid():
         image = img.save()
@@ -21,7 +21,15 @@ def upload_image(request):
     else:
         ret['error'].append('Not a valid form')
         ret['error'].append(img.errors)
-    
+
     # return result
     resp = simplejson.dumps(ret)
     return HttpResponse(resp, mimetype='application/json')
+
+@login_required
+def recent_photos(request):
+    images = [
+        {"thumb": obj.image.url, "image": obj.image.url}
+        for obj in Image.objects.all().order_by("-uploaded")[:20]
+    ]
+    return HttpResponse(json.dumps(images), mimetype="application/json")
