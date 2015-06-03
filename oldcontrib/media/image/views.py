@@ -3,6 +3,8 @@ from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib.auth.decorators import login_required
+
 from oldcontrib.media.image.forms import ImageUpload
 
 @csrf_exempt
