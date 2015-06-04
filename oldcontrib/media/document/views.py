@@ -1,28 +1,30 @@
+import json
+
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django.utils import simplejson
+
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+
+from django.contrib.auth.decorators import login_required
 
 from oldcontrib.media.document.forms import DocumentUpload
-
+from oldcontrib.media.document.models import Document
 
 @csrf_exempt
+@require_POST
+@login_required
 def upload_document(request):
-    """
-    This view accepts 5 values (gallery, position, app_label, model, and pk) which are POSTed.
-    Checks the values and adds the item at the specified position.
-    """
-    ret = {}
-    ret['error'] = []
-    
-    doc = DocumentUpload(request.POST, request.FILES)
-    if doc.is_valid():
-        document = doc.save()
-        ret['item'] = render_to_string('panels/add_document.html',dict(document=document))
-    else:
-        ret['error'].append('Not a valid form')
-        ret['error'].append(doc.errors)
-    
-    # return result
-    resp = simplejson.dumps(ret)
-    return HttpResponse(resp, mimetype='application/json')
+    documents = []
+    for f in request.FILES.getlist("file"):
+        obj = Document.objects.create(document=f)
+        documents.append({"filelink": obj.document.url})
+    return HttpResponse(json.dumps(documents), mimetype="application/json")
+
+@login_required
+def recent_documents(request):
+    documents = [
+        {"thumb": obj.document.url, "document": obj.document.url, "title": obj.title, "name": obj.document.name, "link": obj.document.url, "size": obj.document.size}
+        for obj in Document.objects.all().order_by("-uploaded")[:20]
+    ]
+    return HttpResponse(json.dumps(documents), mimetype="application/json")
