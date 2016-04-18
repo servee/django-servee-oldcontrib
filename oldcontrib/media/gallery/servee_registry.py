@@ -19,22 +19,22 @@ class GalleryFrontendAdmin(frontendadmin.ServeeModelAdmin, GalleryAdmin):
 
 class GalleryInsert(ModelInsert):
     model = Gallery
-    
-    
+
+
     def __init__(self, *args, **kwargs):
         self.item_add_image_template = [
             "servee/wysiwyg/insert/%s/%s/_add_image.html" % (self.model._meta.app_label, self.model._meta.module_name),
             "servee/wysiwyg/insert/%s/_add_image.html" % (self.model._meta.app_label),
         ]
-        
+
         if kwargs.get("add_image_form", None):
             self.add_image_form = kwargs.pop("add_image_form")
         else:
             self.add_image_form = AddForm
-        
+
         super(GalleryInsert, self).__init__(*args, **kwargs)
-    
-    
+
+
     @csrf_exempt
     def reorder(self, request):
         idents_in_order = request.POST.getlist("itemid")
@@ -43,8 +43,8 @@ class GalleryInsert(ModelInsert):
             img.order = i + 1
             img.save()
         return HttpResponse("")
-            
-    
+
+
     @csrf_exempt
     def add_image_view(self, request):
         """
@@ -58,11 +58,11 @@ class GalleryInsert(ModelInsert):
             # Don't commit because we have other things to do below.
             new_instance = form.save(commit=False)
             gi = GalleryItem()
-            
+
             # Set the gallery, order, and save
             gallery = Gallery.objects.get(pk=request.POST["gallery_id"])
             gi.gallery = gallery
-            
+
             gallery_items = gallery.items.order_by("-order").values_list("order", flat=True)
             if gallery_items:
                 if gallery_items[0]:
@@ -72,10 +72,10 @@ class GalleryInsert(ModelInsert):
             else:
                 gi.order = 1
 
-            new_instance.save()            
+            new_instance.save()
             gi.object = new_instance
             gi.save()
-            
+
             #render the new display to the page.
             template = select_template(self.item_add_image_template)
             context = RequestContext(request)
@@ -87,7 +87,7 @@ class GalleryInsert(ModelInsert):
             response = HttpResponse(template.render(context))
             response.status_code = 201
             return response
-        
+
         # return the errors
         response = HttpResponse(form.errors)
         response.status_code = 400
@@ -97,7 +97,7 @@ class GalleryInsert(ModelInsert):
         """
         Returns urls to get the panel, get/filter list, add/upload, delete and get rendered output.
         """
-        from django.conf.urls.defaults import patterns, url
+        from django.conf.urls.defaults import *
         def wrap(view):
             def wrapper(*args, **kwargs):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
@@ -111,25 +111,25 @@ class GalleryInsert(ModelInsert):
                 self.reorder,
                 name="insert_gallery_gallery_reorder"),
         ) + super(GalleryInsert, self).get_urls()
-    
-    
+
+
     def get_add_image_form(self):
         exclude_fields = ["order","gallery"]
-        
+
         for field in Image._meta.fields:
             if field.blank:
                 exclude_fields.append(field.name)
-        
+
         return modelform_factory(Image, form=self.add_image_form,
             exclude=exclude_fields)
-    
+
     def detail_view(self, request, object_id):
         obj = self.get_object(unquote(object_id))
-        
+
         form = self.get_minimal_add_form()
-        
+
         image_form = self.get_add_image_form()
-        
+
         return render_to_response(self.item_detail_template, {
                 "insert": self,
                 "object": obj,
